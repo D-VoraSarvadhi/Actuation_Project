@@ -1,8 +1,17 @@
 import express, { Express } from 'express';
 import cors from 'cors';
+import { config } from 'dotenv';
 import { urlencoded } from 'body-parser';
+import * as routes from './routes/index';
+import './middleware/passportStretagy';
+import errorHandler from './middleware/errorHandling';
+import './models/sellerModel';
+import './middleware/schedule';
+import './utils/dateFormate';
 
-const app = express();
+config();
+
+const PORT = process.env.PORT || 9999;
 
 class Server {
   private app: Express;
@@ -15,9 +24,10 @@ class Server {
     this.app.use(urlencoded({
       extended: true
     }));
+    routes.initRoutes(this.app);
+    this.app.use(errorHandler);
+    this.app.listen(PORT);
   }
 }
 
 new Server();
-
-app.listen(9999);
